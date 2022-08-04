@@ -124,20 +124,7 @@ contract AccuweatherConsumer is ChainlinkClient {
 
     /* ========== CONSUMER REQUEST FUNCTIONS ========== */
 
-    /**
-     * @notice Returns the current weather conditions of a location for the given coordinates.
-     * 
-     * @param _payment the LINK amount in Juels (i.e. 10^18 aka 1 LINK).
-     * @param _lat the latitude (WGS84 standard, from -90 to 90).
-     * @param _lon the longitude (WGS84 standard, from -180 to 180).
-     * @param _units the measurement system ("metric" or "imperial").
-     */
-     //jobID needs to be a string!!!!
-     //_payment is denoted in Juels. Kovan testnet oracle is 0.1 link or 10^17 Juels = 100000000000000000
-     //_lat and _long need quotation marks during input since they're strings.
-     //Example: Ann Arbor WGS84 lat: "42.2808256", "-83.7430378"
-     //_units: "metric"
-    function requestLocationCurrentConditions(uint256 _payment, string calldata _lat, string calldata _lon, string calldata _units) public {
+      function requestLocationCurrentConditions(uint256 _payment, string calldata _lat, string calldata _lon, string calldata _units) public {
         Chainlink.Request memory req = buildChainlinkRequest(loccurcondition_jobId, address(this), this.fulfillLocationCurrentConditions.selector);
 
         req.add("endpoint", "location-current-conditions"); // NB: not required if it has been hardcoded in the job spec
@@ -152,15 +139,7 @@ contract AccuweatherConsumer is ChainlinkClient {
     }
 
     /* ========== CONSUMER FULFILL FUNCTIONS ========== */
-    /**
-     * @notice Consumes the data returned by the node job on a particular request.
-     * @dev Only when `_locationFound` is true, both `_locationFound` and `_currentConditionsResult` will contain
-     * meaningful data (as bytes). This function body is just an example of usage.
-     * @param _requestId the request ID for fulfillment.
-     * @param _locationFound true if a location was found for the given coordinates, otherwise false.
-     * @param _locationResult the location information (encoded as LocationResult).
-     * @param _currentConditionsResult the current weather conditions (encoded as CurrentConditionsResult).
-     */
+    
     function fulfillLocationCurrentConditions(bytes32 _requestId, bool _locationFound, bytes memory _locationResult, bytes memory _currentConditionsResult) public recordChainlinkFulfillment(_requestId) {
         loccurcondition_RID = _requestId;
         if (_locationFound) {
